@@ -1,5 +1,6 @@
 var gulp = require('gulp');
 var sass = require('gulp-sass');
+var browserify = require('gulp-browserify')
 var browsersync = require('browser-sync').create();
 
 gulp.task('styles', function() {
@@ -7,7 +8,17 @@ gulp.task('styles', function() {
 			.pipe(sass())
 			.pipe(gulp.dest('dist/css'))
 			.pipe(browsersync.stream());
-}); 
+});
+
+gulp.task('scripts', function() {
+	return gulp.src('app/js/*.js')
+			.pipe(browserify({
+		  	insertGlobals : true,
+		  	debug : !gulp.env.production
+			}))
+			.pipe(gulp.dest('dist/js'))
+			.pipe(browsersync.stream());
+})
 
 gulp.task('assets', function() {
 	return gulp.src('app/assets/**/*')
@@ -27,8 +38,9 @@ gulp.task('serve', function() {
 	});
 
 	gulp.watch('app/css/*.scss', ['styles']);
+	gulp.watch('app/js/*js', ['scripts']);
 	gulp.watch('app/*.html', ['copy']);
 	gulp.watch('app/assets/**/*', ['assets']);
 });
 
-gulp.task('default', ['styles', 'copy', 'assets', 'serve']);
+gulp.task('default', ['styles', 'scripts', 'copy', 'assets', 'serve']);
