@@ -1,5 +1,7 @@
 var gulp = require('gulp');
 var sass = require('gulp-sass');
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
 var browsersync = require('browser-sync').create();
 
 gulp.task('styles', function() {
@@ -10,9 +12,11 @@ gulp.task('styles', function() {
 });
 
 gulp.task('scripts', function() {
-	return gulp.src('app/js/*.js')
-			.pipe(gulp.dest('dist/js'))
-			.pipe(browsersync.stream());
+	 return browserify('app/js/app.js')
+    .bundle()
+    .pipe(source('app.js'))
+    .pipe(gulp.dest('dist/js'))
+    .pipe(browsersync.stream());
 })
 
 gulp.task('assets', function() {
@@ -33,7 +37,7 @@ gulp.task('serve', function() {
 	});
 
 	gulp.watch('app/css/*.scss', ['styles']);
-	gulp.watch('app/js/*js', ['scripts']);
+	gulp.watch('app/js/*.js', ['scripts']);
 	gulp.watch('app/*.html', ['copy']);
 	gulp.watch('app/assets/**/*', ['assets']);
 });
