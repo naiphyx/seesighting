@@ -1,10 +1,12 @@
-const SparqlClient = require('sparql-client');
+const SparqlClient = require('sparql-client')
 const $ = require('jquery')
 
 // sparql-client setup
-var endpoint = 'http://dbpedia.org/sparql';
-var query = 'select distinct ?Concept from <http://dbpedia.org> where {[] a ?Concept} limit 100';
-var client = new SparqlClient(endpoint);
+var endpoint = 'http://dbpedia.org/sparql'
+var query = 'select distinct ?Concept from <http://dbpedia.org> where {[] a ?Concept} limit 100'
+var client = new SparqlClient(endpoint)
+
+var x, y
 
 // run query with callbacks
 client.query(query, function (error, results) {
@@ -15,14 +17,8 @@ client.query(query, function (error, results) {
   }
 })
 
-var map;
-function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: -34.397, lng: 150.644},
-    zoom: 8
-  });
-  getLocation();
-}
+
+
 
 
 function centerMaptoGeolocation(position){
@@ -41,5 +37,5 @@ function getLocation() {
 
 
 $(document).ready(function(){
-initMap();
+
 })
