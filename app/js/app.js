@@ -1,14 +1,19 @@
-var SparqlClient = require('sparql-client');
+const SparqlClient = require('sparql-client');
 const $ = require('jquery')
 
+// sparql-client setup
 var endpoint = 'http://dbpedia.org/sparql';
 var query = 'select distinct ?Concept from <http://dbpedia.org> where {[] a ?Concept} limit 100';
 var client = new SparqlClient(endpoint);
-console.log("Query to " + endpoint);
-console.log("Query: " + query);
+
+// run query with callbacks
 client.query(query, function (error, results) {
-    console.log(results);
-});
+  if (error) {
+    console.log(error)
+  } else {
+    console.log(results)
+  }
+})
 
 
 var map;
@@ -25,19 +30,19 @@ $(document).ready(function(){
 
 
 
-
 })
 
 
-function showPosition(position) {
-  console.log(position.coords.latitude + " " + position.coords.longitude)
-}
 
+// gets the lat and long of the user
+function showPosition(position) {
+  console.log("lat: " + position.coords.latitude + " long: " + position.coords.longitude)
+}
 
 
 function getLocation() {
   if (navigator.geolocation) {
-      return navigator.geolocation.getCurrentPosition(showPosition);
+      return navigator.geolocation.getCurrentPosition(showPosition)
   } else {
     console.log("Geolocation is not supported by this browser.")
   }
