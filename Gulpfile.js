@@ -1,6 +1,5 @@
 var gulp = require('gulp');
 var sass = require('gulp-sass');
-var browserify = require('gulp-browserify')
 var browsersync = require('browser-sync').create();
 
 gulp.task('styles', function() {
@@ -12,10 +11,6 @@ gulp.task('styles', function() {
 
 gulp.task('scripts', function() {
 	return gulp.src('app/js/*.js')
-			.pipe(browserify({
-		  	insertGlobals : true,
-		  	debug : !gulp.env.production
-			}))
 			.pipe(gulp.dest('dist/js'))
 			.pipe(browsersync.stream());
 })
