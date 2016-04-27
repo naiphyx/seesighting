@@ -15,35 +15,31 @@ client.query(query, function (error, results) {
   }
 })
 
-
 var map;
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: -34.397, lng: 150.644},
     zoom: 8
   });
+  getLocation();
 }
 
-$(document).ready(function(){
 
-  getLocation()
-
-
-
-})
-
-
-
-// gets the lat and long of the user
-function showPosition(position) {
+function centerMaptoGeolocation(position){
+	map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude})
   console.log("lat: " + position.coords.latitude + " long: " + position.coords.longitude)
 }
 
 
 function getLocation() {
   if (navigator.geolocation) {
-      return navigator.geolocation.getCurrentPosition(showPosition)
+      return navigator.geolocation.getCurrentPosition(centerMaptoGeolocation);
   } else {
     console.log("Geolocation is not supported by this browser.")
   }
 }
+
+
+$(document).ready(function(){
+initMap();
+})
