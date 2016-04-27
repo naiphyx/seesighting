@@ -16,9 +16,9 @@ var query = " PREFIX dcterms:  <http://purl.org/dc/terms/>\
               }\
               ORDER BY ASC(?City)\
             ";
-var client = new SparqlClient(endpoint);
-console.log("Query to " + endpoint);
-console.log("Query: " + query);
+var client = new SparqlClient(endpoint)
+console.log("Query to " + endpoint)
+console.log("Query: " + query)
 
 var x, y
 
@@ -30,9 +30,12 @@ client.query(query, function (error, results) {
   }
 })
 
-
-
-
+$( 'form' ).submit(function( event ) {
+  var city = $('#inputfield').val()
+  alert(city)
+  $('#inputfield').val('')
+  event.preventDefault()
+});
 
 function centerMaptoGeolocation(position){
 	map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude})
