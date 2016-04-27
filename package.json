@@ -25,6 +25,6 @@
     "vinyl-transform": "^1.0.0"
   },
   "dependencies": {
-    "sparql-client": "^0.2.0",
+    "sparql-client": "^0.2.0"
   }
 }
