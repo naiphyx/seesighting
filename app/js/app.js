@@ -13,16 +13,34 @@ $(document).ready(function(){
 
   // sets the lat and lng of the current user
   getLocation()
-
-  
-  // eventhandler for input field
-  $('form').submit(function( event ) {
-    var city = $('#inputfield').val()
-    alert(city)
-    $('#inputfield').val('')
-    event.preventDefault()
-  });
 })
+
+
+// eventhandler for input field
+  $( 'form' ).submit(function( event ) {
+    var city = $('#inputfield').val()
+    $('#cityname').html(city)
+    $('#inputfield').val('')
+    getSightsByCity(city)
+    event.preventDefault()
+  })
+
+
+// view results
+  function showResults(object) {
+    var arr = object.results.bindings
+    $('#sightlist').html("")
+
+    if(arr.length == 0) {
+      $('#cityerror').html("no sights found for " + $('#cityname').val())
+    }
+    else {
+      for (var i = 0; i < arr.length; i++) {
+        var val = arr[i].Label.value
+        $('#sightlist').append("<li>" + val + "</li>")
+      }
+    }
+  }
 
 
 // <------------ User Location --------------->
@@ -58,6 +76,7 @@ function queryDB(query) {
       console.log(error)
     } else {
       console.log(results)
+      showResults(results)
     }
   })
 }
@@ -71,19 +90,18 @@ function getSightsInProximity() {
 }
 
 
-function getSightsByCity(city) {0
+function getSightsByCity(city) {
+  city = city.replace(" ", "_")
   var query = "PREFIX dcterms:  <http://purl.org/dc/terms/>\
-              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\
-              SELECT DISTINCT (str(?city) as ?City) (str(?label) as ?Attractions)\
-              WHERE { \
-                ?entity skos:broader <http://dbpedia.org/resource/Category:Tourism_by_city> .\
-                ?places skos:broader ?entity .\
-                ?places rdfs:label ?city .\
-              FILTER langMatches(lang(?label), 'en').\
-                ?attractions dcterms:subject ?places .\
-                ?attractions rdfs:label ?label .\
-              FILTER regex(str(?city), '(Tourist|Visitor)')\
-              }\
-              ORDER BY ASC(?City)"
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\
+                SELECT DISTINCT (str(?label) as ?Label) (str(?lat) as ?Lat) (str(?long) as ?Long)\
+                WHERE { \
+                  ?sight dct:subject <http://dbpedia.org/resource/Category:Visitor_attractions_in_" + city + "> .\
+                FILTER langMatches(lang(?label), 'en').\
+                  ?sight rdfs:label ?label .\
+                  ?sight geo:lat ?lat .\
+                  ?sight geo:long ?long\
+                }\
+                ORDER BY ASC(?Label)"
   queryDB(query)
 }

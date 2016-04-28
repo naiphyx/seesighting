@@ -21,6 +21,12 @@
 			  </form>
 		  </div>
 
+      <div class="output">
+        <h2 id="cityname"></h2>
+        <P id="cityerror"></P>
+        <ul id="sightlist"></ul>
+      </div>
+
 		  <div class="map" id="map"></div>
       <script>
       var map;
@@ -28,7 +34,7 @@
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: -34.397, lng: 150.644},
           scrollwheel: false,
-          draggable: false,
+          draggable: true,
           zoom: 12
         });
       }
