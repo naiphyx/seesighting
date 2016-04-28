@@ -4,7 +4,7 @@ const $ = require('jquery')
 // <-------------- Variables ---------------->
 var endpoint = 'http://dbpedia.org/sparql'
 var client = new SparqlClient(endpoint)
-var results = []
+var sights = []
 var lat, long
 
 
@@ -81,8 +81,9 @@ $(document).ready(function(){
       if (error) {
         console.log(error)
       } else {
-        console.log(results)
-        showResults(results)
+        console.log(results.results.bindings)
+        sights = results.results.bindings
+        // showResults(results)
       }
     })
   }
