@@ -38,10 +38,16 @@ $(document).ready(function(){
     else {
       for (var i = 0; i < arr.length; i++) {
         var val = arr[i].Label.value
-        $('#sightlist').append("<li>" + val + "</li>")
+        $('#sightlist').append('<li onclick="showInfos();">' + val + '</li>')
       }
     }
   }
+
+// view infos per sight
+  function showInfos() {
+    console.log("funkt!")
+  }
+
 
 
 // <------------ User Location --------------->
