@@ -7,7 +7,7 @@ var client = new SparqlClient(endpoint)
 var sights = []
 var markers = []
 var centerLat, centerLng
-
+var markers = [];
 
 // <------------- onload ----------------------->
 $(document).ready(function(){
@@ -89,6 +89,7 @@ $(document).ready(function(){
       title: label,
       animation: google.maps.Animation.DROP
     })
+    markers.unshift(marker)
   }
 
 
