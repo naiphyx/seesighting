@@ -15,7 +15,7 @@ $(document).ready(function(){
   getLocation()
 
   $('#sightlist').on('click', 'li', function() {
-    console.log("id: " + this.dataset.id + " label: " + this.innerHTML);
+    showDetails(this.dataset.id)
   })
 })
 
@@ -33,26 +33,24 @@ $(document).ready(function(){
 
 // view results
   function showResults(object) {
-    var arr = object.results.bindings
     $('#sightlist').html("")
 
-    if(arr.length == 0) {
+    if(sights.length == 0) {
       $('#cityerror').html("no sights found")
     }
     else {
-      for (var i = 0; i < arr.length; i++) {
-        var val = arr[i].Label.value
+      for (var i = 0; i < sights.length; i++) {
+        var val = sights[i].Label.value
         $('#sightlist').append('<li data-id="' + i + '">' + val + '</li>')
       }
     }
   }
 
-// view infos per sight
-  // function showInfos() {
-  //   $('#sightlist').on('click', 'li', function() {
-  //     console.log(this)
-  //   })
-  // }
+// show details per sight
+  function showDetails(id) {
+    $('#sightlabel').html(sights[id].Label.value)
+    $('#sightabstract').html(sights[id].Abstract.value)
+  }
 
 
   // <------------ User Location --------------->
@@ -98,7 +96,7 @@ $(document).ready(function(){
       } else {
         console.log(results.results.bindings)
         sights = results.results.bindings
-        showResults(results)
+        showResults()
         setMarkers()
       }
     })
@@ -117,13 +115,15 @@ $(document).ready(function(){
     city = city.replace(" ", "_")
     var query = "PREFIX dcterms:  <http://purl.org/dc/terms/>\
                   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\
-                  SELECT DISTINCT (str(?label) as ?Label) (str(?lat) as ?Lat) (str(?long) as ?Long)\
+                  SELECT DISTINCT (str(?label) as ?Label) (str(?lat) as ?Lat) (str(?long) as ?Long) (?abstract as ?Abstract) \
                   WHERE { \
                     ?sight dct:subject <http://dbpedia.org/resource/Category:Visitor_attractions_in_" + city + "> .\
                   FILTER langMatches(lang(?label), 'en').\
+                  FILTER langMatches(lang(?abstract), 'en').\
                     ?sight rdfs:label ?label .\
                     ?sight geo:lat ?lat .\
-                    ?sight geo:long ?long\
+                    ?sight geo:long ?long .\
+                    ?sight dbo:abstract ?abstract \
                   }\
                   ORDER BY ASC(?Label)"
     queryDB(query)
