@@ -23,11 +23,27 @@ $(document).ready(function(){
 // eventhandler for input field
   $( 'form' ).submit(function( event ) {
     var city = $('#inputfield').val()
-    alert(city)
+    $('#cityname').html(city)
     $('#inputfield').val('')
-    console.log(getSightsByCity(city))
+    getSightsByCity(city)
     event.preventDefault()
   })
+
+// view results
+  function showResults(object) {
+    var arr = object.results.bindings
+    $('#sightlist').html("")
+
+    if(arr.length == 0) {
+      $('#cityerror').html("no sights found for " + $('#cityname').val())
+    }
+    else {
+      for (var i = 0; i < arr.length; i++) {
+        var val = arr[i].Label.value
+        $('#sightlist').append("<li>" + val + "</li>")
+      }
+    }
+  }
 
 
 // <------------ User Location --------------->
@@ -65,6 +81,7 @@ function queryDB(query) {
       console.log(error)
     } else {
       console.log(results)
+      showResults(results)
     }
   })
 }
