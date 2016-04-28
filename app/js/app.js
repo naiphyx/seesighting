@@ -21,6 +21,7 @@ $(document).ready(function(){
     var city = $('#inputfield').val()
     $('#cityname').html(city)
     $('#inputfield').val('')
+    $('#cityerror').html('')
     getSightsByCity(city)
     event.preventDefault()
   })
@@ -32,7 +33,7 @@ $(document).ready(function(){
     $('#sightlist').html("")
 
     if(arr.length == 0) {
-      $('#cityerror').html("no sights found for " + $('#cityname').val())
+      $('#cityerror').html("no sights found")
     }
     else {
       for (var i = 0; i < arr.length; i++) {
