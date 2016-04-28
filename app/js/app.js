@@ -79,18 +79,17 @@ function getSightsInProximity() {
 
 
 function getSightsByCity(city) {
+  city = city.replace(" ", "_")
   var query = "PREFIX dcterms:  <http://purl.org/dc/terms/>\
-              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\
-              SELECT DISTINCT (str(?city) as ?City) (str(?label) as ?Attractions)\
-              WHERE { \
-                ?entity skos:broader <http://dbpedia.org/resource/Category:Tourism_by_city> .\
-                ?places skos:broader ?entity .\
-                ?places rdfs:label ?city .\
-              FILTER langMatches(lang(?label), 'en').\
-                ?attractions dcterms:subject ?places .\
-                ?attractions rdfs:label ?label .\
-              FILTER regex(str(?city), '((?<=(Tourist|Visitor)) attractions in " + city + ")')\
-              }\
-              ORDER BY ASC(?City)"
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\
+                SELECT DISTINCT (str(?label) as ?Label) (str(?lat) as ?Lat) (str(?long) as ?Long)\
+                WHERE { \
+                  ?sight dct:subject <http://dbpedia.org/resource/Category:Visitor_attractions_in_" + city + "> .\
+                FILTER langMatches(lang(?label), 'en').\
+                  ?sight rdfs:label ?label .\
+                  ?sight geo:lat ?lat .\
+                  ?sight geo:long ?long\
+                }\
+                ORDER BY ASC(?Label)"
   queryDB(query)
 }
