@@ -13,6 +13,10 @@ $(document).ready(function(){
 
   // sets the lat and lng of the current user
   getLocation()
+
+  $('#sightlist').on('click', 'li', function() {
+    console.log("id: " + this.dataset.id + " label: " + this.innerHTML);
+  })
 })
 
 
@@ -44,11 +48,11 @@ $(document).ready(function(){
   }
 
 // view infos per sight
-  function showInfos() {
-    $('#sightlist').on('click', 'li', function() { 
-      console.log(this)
-    })
-  }
+  // function showInfos() {
+  //   $('#sightlist').on('click', 'li', function() {
+  //     console.log(this)
+  //   })
+  // }
 
 
   // <------------ User Location --------------->
