@@ -4,8 +4,8 @@ const $ = require('jquery')
 // <-------------- Variables ---------------->
 var endpoint = 'http://dbpedia.org/sparql'
 var client = new SparqlClient(endpoint)
-var results[]
-var lat, lng
+var results = []
+var lat, long
 
 
 // <----------------------------------------->
@@ -14,11 +14,9 @@ $(document).ready(function(){
   // sets the lat and lng of the current user
   getLocation()
 
-  // centers the map at the current position of the user
-  centerMaptoGeolocation()
-
+  
   // eventhandler for input field
-  $( 'form' ).submit(function( event ) {
+  $('form').submit(function( event ) {
     var city = $('#inputfield').val()
     alert(city)
     $('#inputfield').val('')
@@ -40,15 +38,13 @@ function getLocation() {
 function setCoords(position) {
   lat = position.coords.latitude
   long = position.coords.longitude
+
+  // centers the map at the current position of the user
+  map.setCenter({lat: lat, lng: long})
 }
 
 
 // <---------------- Map --------------------->
-function centerMaptoGeolocation(){
-	map.setCenter({lat: lat, lng: long})
-}
-
-
 function setMarkers() {
 
 }
@@ -75,7 +71,7 @@ function getSightsInProximity() {
 }
 
 
-function getSightsByCity(city) {
+function getSightsByCity(city) {0
   var query = "PREFIX dcterms:  <http://purl.org/dc/terms/>\
               PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\
               SELECT DISTINCT (str(?city) as ?City) (str(?label) as ?Attractions)\
