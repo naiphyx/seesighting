@@ -38,16 +38,17 @@ $(document).ready(function(){
     else {
       for (var i = 0; i < arr.length; i++) {
         var val = arr[i].Label.value
-        $('#sightlist').append('<li onclick="showInfos();">' + val + '</li>')
+        $('#sightlist').append('<li value="' + i + '">' + val + '</li>')
       }
     }
   }
 
 // view infos per sight
   function showInfos() {
-    console.log("funkt!")
+    $("ul#sightlist > li").click(function(){
+        alert("The li was clicked.")
+    })
   }
-
 
 
   // <------------ User Location --------------->
@@ -83,7 +84,7 @@ $(document).ready(function(){
       } else {
         console.log(results.results.bindings)
         sights = results.results.bindings
-        // showResults(results)
+        showResults(results)
       }
     })
   }
