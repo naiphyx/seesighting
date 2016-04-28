@@ -4,7 +4,7 @@ const $ = require('jquery')
 // <-------------- Variables ---------------->
 var endpoint = 'http://dbpedia.org/sparql'
 var client = new SparqlClient(endpoint)
-var results[]
+var results = []
 var lat, lng
 
 
@@ -17,14 +17,17 @@ $(document).ready(function(){
   // centers the map at the current position of the user
   centerMaptoGeolocation()
 
-  // eventhandler for input field
+  
+})
+
+// eventhandler for input field
   $( 'form' ).submit(function( event ) {
     var city = $('#inputfield').val()
     alert(city)
     $('#inputfield').val('')
+    console.log(getSightsByCity(city))
     event.preventDefault()
-  });
-})
+  })
 
 
 // <------------ User Location --------------->
@@ -86,7 +89,7 @@ function getSightsByCity(city) {
               FILTER langMatches(lang(?label), 'en').\
                 ?attractions dcterms:subject ?places .\
                 ?attractions rdfs:label ?label .\
-              FILTER regex(str(?city), '(Tourist|Visitor)')\
+              FILTER regex(str(?city), '((?<=(Tourist|Visitor)) attractions in " + city + ")')\
               }\
               ORDER BY ASC(?City)"
   queryDB(query)
