@@ -38,15 +38,15 @@ $(document).ready(function(){
     else {
       for (var i = 0; i < arr.length; i++) {
         var val = arr[i].Label.value
-        $('#sightlist').append('<li value="' + i + '">' + val + '</li>')
+        $('#sightlist').append('<li data-id="' + i + '">' + val + '</li>')
       }
     }
   }
 
 // view infos per sight
   function showInfos() {
-    $("ul#sightlist > li").click(function(){
-        alert("The li was clicked.")
+    $('#sightlist').on('click', 'li', function() { 
+      console.log(this)
     })
   }
 
