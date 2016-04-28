@@ -5,9 +5,9 @@ const $ = require('jquery')
 var endpoint = 'http://dbpedia.org/sparql'
 var client = new SparqlClient(endpoint)
 var sights = []
-var markers = []
+// var markers = []
 var centerLat, centerLng
-var markers = [];
+
 
 // <------------- onload ----------------------->
 $(document).ready(function(){
@@ -48,13 +48,6 @@ $(document).ready(function(){
     }
   }
 
-// view infos per sight
-  // function showInfos() {
-  //   $('#sightlist').on('click', 'li', function() {
-  //     console.log(this)
-  //   })
-  // }
-
 
   // <------------ User Location --------------->
   function getLocation() {
@@ -75,21 +68,26 @@ $(document).ready(function(){
   }
 
 
+  // loops through sights[] and calls addMarker()
   function setMarkers() {
     for (var i = 0; i < sights.length; i++) {
-      addMarker({lat: parseFloat(sights[i].Lat.value), lng: parseFloat(sights[i].Long.value)}, sights[i].Label.value)
+      setMarker({lat: parseFloat(sights[i].Lat.value),
+                        lng: parseFloat(sights[i].Long.value)},
+                        sights[i].Label.value,
+                        sights[i].Thumbnail.value)
     }
   }
 
 
-  function addMarker(location, label) {
+  // draws a marker to the map
+  function setMarker(location, label, thumbnail) {
     var marker = new google.maps.Marker({
       position: location,
       map: map,
       title: label,
       animation: google.maps.Animation.DROP
     })
-    markers.unshift(marker)
+      // markers.push(marker)
   }
 
 
@@ -101,7 +99,10 @@ $(document).ready(function(){
       } else {
         console.log(results.results.bindings)
         sights = results.results.bindings
-        showResults(results)
+        // showResults(results)
+        $('html, body').stop().animate({
+          scrollTop: $(document).height()
+        }, 1500)
         setMarkers()
       }
     })
@@ -120,13 +121,14 @@ $(document).ready(function(){
     city = city.replace(" ", "_")
     var query = "PREFIX dcterms:  <http://purl.org/dc/terms/>\
                   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\
-                  SELECT DISTINCT (str(?label) as ?Label) (str(?lat) as ?Lat) (str(?long) as ?Long)\
+                  SELECT DISTINCT (str(?label) as ?Label) (str(?lat) as ?Lat) (str(?long) as ?Long) (str(?thumbnail) as ?Thumbnail)\
                   WHERE { \
                     ?sight dct:subject <http://dbpedia.org/resource/Category:Visitor_attractions_in_" + city + "> .\
                   FILTER langMatches(lang(?label), 'en').\
                     ?sight rdfs:label ?label .\
                     ?sight geo:lat ?lat .\
-                    ?sight geo:long ?long\
+                    ?sight geo:long ?long .\
+                    ?sight dbo:thumbnail ?thumbnail\
                   }\
                   ORDER BY ASC(?Label)"
     queryDB(query)
