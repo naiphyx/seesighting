@@ -5,7 +5,7 @@ const $ = require('jquery')
 var endpoint = 'http://dbpedia.org/sparql'
 var client = new SparqlClient(endpoint)
 var sights = []
-var lat, long
+var centerLat, centerLng
 
 
 // <------------- onload ----------------------->
@@ -61,18 +61,28 @@ $(document).ready(function(){
 
 
   function setCoords(position) {
-    lat = position.coords.latitude
-    long = position.coords.longitude
+    centerLat = position.coords.latitude
+    centerLng = position.coords.longitude
 
     // centers the map at the current position of the user
-    map.setCenter({lat: lat, lng: long})
+    map.setCenter({lat: centerLat, lng: centerLng})
   }
 
 
   function setMarkers() {
-
+    for (var i = 0; i < sights.length; i++) {
+      addMarker({lat: parseInt(sights[i].Lat.value), lng: parseInt(sights[i].Long.value)}, sights[i].Label.value)
+    }
   }
 
+
+  function addMarker(location, label) {
+    var marker = new google.maps.Marker({
+      position: location,
+      map: map,
+      title: label
+    })
+  }
 
 
   // runs a query against the DB with given params
@@ -84,6 +94,7 @@ $(document).ready(function(){
         console.log(results.results.bindings)
         sights = results.results.bindings
         // showResults(results)
+        setMarkers()
       }
     })
   }
