@@ -266,6 +266,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE 
 {
 ?s a dbo:ArchitecturalStructure .
+FILTER NOT EXISTS { ?s a dbo:Station } .
 ?s rdfs:label ?name .
 FILTER langMatches(lang(?name), 'en').
 ?s dbo:thumbnail ?thumbnail .
