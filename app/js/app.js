@@ -50,7 +50,7 @@ $(document).ready(function(){
         $('#sightlist').append('<li data-id="' + i + '"><a href="#current-details" class="detail-popup">' + val + '</a></li>')
       }
     }
-
+    // add popup functionality after li are appended
     $('.detail-popup').magnificPopup({
       type:'inline',
       midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
