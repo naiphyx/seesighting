@@ -40,7 +40,9 @@ window.map.addListener("idle",function(){
 //Get radius from coordinate data of Map Borders 
   var radius=(Math.max(Math.abs(top-bottom),Math.abs(right-left)))
 
-  getSightsInProximity(window.map.getCenter().lng(), window.map.getCenter().lat(), radius)
+// dont make request if zoomfactor is too big
+  if (radius<3)
+  getSightsInProximity(window.map.getCenter().lng(), window.map.getCenter().lat(), radius/2)
 })
 
 
@@ -181,6 +183,13 @@ window.map.addListener("idle",function(){
 
   function addProximityMarkers(buildings, delay){
     //clearMarkers()
+    if (buildingsOverall.length>2000)
+    {
+      clearMarkers()
+      buildingsOverall = {}
+    }
+
+
     for (var i = 0; i < buildings.length; i++) {
 
       if (!(buildingsOverall[buildings[i].name.value]))
@@ -192,6 +201,7 @@ window.map.addListener("idle",function(){
   }
 
   function addDelayedProximityMarkers(building, delay) {
+
     var string = ''
     if(building.thumbnail.value != '') string += '<img src=' + building.thumbnail.value + ' style="margin: 15px 5px 0 5px" />'
     string += '<p>' + building.name.value + '</p>'
@@ -267,6 +277,7 @@ SELECT * WHERE
 {
 ?s a dbo:ArchitecturalStructure .
 FILTER NOT EXISTS { ?s a dbo:Station } .
+FILTER NOT EXISTS { ?s a dbo:RailwayLine } .
 ?s rdfs:label ?name .
 FILTER langMatches(lang(?name), 'en').
 ?s dbo:thumbnail ?thumbnail .
