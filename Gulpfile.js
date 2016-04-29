@@ -31,6 +31,11 @@ gulp.task('copy', function() {
 	.pipe(browsersync.stream());
 });
 
+gulp.task('magnific-css', function() {
+	return gulp.src('node_modules/magnific-popup/dist/magnific-popup.css')
+	.pipe(gulp.dest('dist/css'));
+})
+
 gulp.task('serve', function() {
 	browsersync.init({
 		server: './dist'
@@ -42,4 +47,4 @@ gulp.task('serve', function() {
 	gulp.watch('app/assets/**/*', ['assets']);
 });
 
-gulp.task('default', ['styles', 'scripts', 'copy', 'assets', 'serve']);
+gulp.task('default', ['styles', 'scripts', 'copy', 'assets', 'magnific-css', 'serve']);

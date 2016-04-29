@@ -1,5 +1,6 @@
 const SparqlClient = require('sparql-client')
 const $ = require('jquery')
+const magnificPopup = require('magnific-popup')
 
 // <-------------- Variables ---------------->
 var endpoint = 'http://dbpedia.org/sparql'
@@ -41,14 +42,19 @@ $(document).ready(function(){
     $('#sightlist').html("")
 
     if(sights.length == 0) {
-      $('#cityerror').html("no sights found")
+      $('#cityerror').html("We are terribly sorry, we were not able to find any sights matching your city. ")
     }
     else {
       for (var i = 0; i < sights.length; i++) {
         var val = sights[i].Label.value
-        $('#sightlist').append('<li data-id="' + i + '">' + val + '</li>')
+        $('#sightlist').append('<li data-id="' + i + '"><a href="#current-details" class="detail-popup">' + val + '</a></li>')
       }
     }
+
+    $('.detail-popup').magnificPopup({
+      type:'inline',
+      midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
+    })
   }
 
 

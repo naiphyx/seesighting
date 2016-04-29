@@ -65,7 +65,7 @@ h1 {
 #sightlist {
 	list-style-type: none;
 	padding: 0;
-	margin: 0 auto 80px auto;
+	margin: 0 auto 100px auto;
 	max-width: 500px;
 }
 
@@ -78,4 +78,22 @@ h1 {
 		letter-spacing: 0.05em;
 		cursor: pointer;
 	}
+}
+
+.white-popup {
+  position: relative;
+  background: #FFF;
+  padding: 40px 80px;
+  width: auto;
+  max-width: 500px;
+  margin: 20px auto;
+  text-align: center;
+
+  p#sightabstract {
+  	text-align: justify;
+  	-webkit-hyphens: auto;
+  	-moz-hyphens: auto;
+  	-ms-hyphens: auto;
+  	hyphens: auto;
+  }
 }
