@@ -60,12 +60,13 @@ h1 {
 .map {
 	height: 100vh;
 	background: $darkblue;
+	margin-top: 100px;
 }
 
 #sightlist {
 	list-style-type: none;
 	padding: 0;
-	margin: 0 auto 100px auto;
+	margin: 0 auto;
 	max-width: 500px;
 }
 

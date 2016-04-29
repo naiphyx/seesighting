@@ -20,6 +20,12 @@ $(document).ready(function(){
   $('#sightlist').on('click', 'li', function() {
     showDetails(this.dataset.id)
   })
+
+  $("#sightlist, #showhidelist").hide()
+
+  $("#showhidelist").click(function() {
+    $('#sightlist').slideToggle( "slow", function() {})
+  })
 })
 
 
@@ -41,6 +47,8 @@ $(document).ready(function(){
 // view results
   function showResults(object) {
     $('#sightlist').html("")
+
+     $("#showhidelist").show()
 
     if(sights.length == 0) {
       $('#cityerror').html("We are terribly sorry, we were not able to find any sights matching your city. ")
