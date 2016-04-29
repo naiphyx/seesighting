@@ -26,6 +26,7 @@ $(document).ready(function(){
 // eventhandler for input field
   $( 'form' ).submit(function( event ) {
     var city = $('#inputfield').val()
+    city = city.charAt(0).toUpperCase() + city.slice(1)
     $('#cityname').html(city)
     $('#inputfield').val('')
     $('#cityerror').html('')
@@ -172,6 +173,17 @@ $(document).ready(function(){
   }
 
 
+  function stringify(city) {
+    var str = city.split(' ')
+
+    for (var i = 0; i < str.length; i++) {
+      str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1)
+    }
+
+    return str.join('_')
+  }
+
+
   function getSightsInProximity() {
     var query = ""
 
@@ -181,7 +193,8 @@ $(document).ready(function(){
 
 
   function getSightsByCity(city) {
-    city = city.replace(" ", "_")
+    city = stringify(city)
+
     var query = "PREFIX dcterms:  <http://purl.org/dc/terms/>\
                   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\
                   SELECT DISTINCT (str(?label) as ?Label) (str(?lat) as ?Lat) (str(?long) as ?Long) (str(?thumbnail) as ?Thumbnail) (?abstract as ?Abstract)\
