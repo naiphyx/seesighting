@@ -5,7 +5,8 @@ const $ = require('jquery')
 var endpoint = 'http://dbpedia.org/sparql'
 var client = new SparqlClient(endpoint)
 var sights = []
-// var markers = []
+var markers = []
+var infoWindows = []
 var centerLat, centerLng
 
 
@@ -75,29 +76,55 @@ $(document).ready(function(){
 
     // centers the map at the current position of the user
     map.setCenter({lat: centerLat, lng: centerLng})
+    map.addListener('click', function() {
+      closeInfowindows()
+    })
   }
 
-
-  // loops through sights[] and calls addMarker()
-  function setMarkers() {
+  function addMarkers() {
+    clearMarkers()
     for (var i = 0; i < sights.length; i++) {
-      setMarker({lat: parseFloat(sights[i].Lat.value),
-                        lng: parseFloat(sights[i].Long.value)},
-                        sights[i].Label.value,
-                        sights[i].Thumbnail.value)
+      addDelayedMarkers(sights[i], i * 50)
     }
   }
 
 
-  // draws a marker to the map
-  function setMarker(location, label, thumbnail) {
-    var marker = new google.maps.Marker({
-      position: location,
-      map: map,
-      title: label,
-      animation: google.maps.Animation.DROP
-    })
-      // markers.push(marker)
+  function clearMarkers() {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(null)
+    }
+  }
+
+
+  function closeInfowindows() {
+    for (var i = 0; i < infoWindows.length; i++) {
+      infoWindows[i].close()
+    }
+  }
+
+
+  function addDelayedMarkers(sight, delay) {
+    var string = ''
+    if(sight.Thumbnail.value != '') string += '<img src=' + sight.Thumbnail.value + ' style="margin: 15px 5px 0 5px" />'
+    string += '<p>' + sight.Label.value + '</p>'
+
+    window.setTimeout(function() {
+      var marker = new google.maps.Marker({
+        position: {lat: parseFloat(sight.Lat.value), lng: parseFloat(sight.Long.value)},
+        map: map,
+        title: sight.Label.value,
+        animation: google.maps.Animation.DROP
+      })
+      marker.info = new google.maps.InfoWindow({
+        content: string
+      })
+      infoWindows.push(marker.info)
+      google.maps.event.addListener(marker, 'click', function() {
+        closeInfowindows()
+        marker.info.open(map, marker)
+      })
+      markers.push(marker)
+    }, delay)
   }
 
 
@@ -113,9 +140,29 @@ $(document).ready(function(){
         $('html, body').stop().animate({
           scrollTop: $(document).height()
         }, 1500)
-        setMarkers()
+        addMarkers()
+        var mean = getLocationMean()
+        console.log("lat: " + mean.lat + " long: " + mean.long);
+        map.setCenter({lat: mean.lat, lng: mean.long})
       }
     })
+  }
+
+
+  function getLocationMean() {
+    var mean = {
+      lat: 0,
+      long: 0
+    }
+
+    for (var i = 0; i < sights.length; i++) {
+      mean.lat += parseFloat(sights[i].Lat.value)
+      mean.long += parseFloat(sights[i].Long.value)
+    }
+
+    mean.lat = mean.lat / sights.length
+    mean.long = mean.long / sights.length
+    return mean
   }
 
 
