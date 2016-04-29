@@ -9,17 +9,32 @@ var sights = []
 var markers = []
 var infoWindows = []
 var centerLat, centerLng
+var buildingsOverall = {}
 
 
 // <------------- onload ----------------------->
 $(document).ready(function(){
 
   // sets the lat and lng of the current user
-  getLocation()
+
 
   $('#sightlist').on('click', 'li', function() {
     showDetails(this.dataset.id)
   })
+})
+
+
+window.map.addListener("idle",function(){
+  var bounds = window.map.getBounds();
+  var top = bounds.H.j
+  var left = bounds.j.j
+  var bottom = bounds.H.H
+  var right = bounds.j.H
+
+//Get radius from coordinate data of Map Borders 
+  var radius=(Math.max(Math.abs(top-bottom),Math.abs(right-left)))
+
+  getSightsInProximity(window.map.getCenter().lng(), window.map.getCenter().lat(), radius)
 })
 
 
@@ -156,6 +171,59 @@ $(document).ready(function(){
   }
 
 
+  function addProximityMarkers(buildings, delay){
+    //clearMarkers()
+    for (var i = 0; i < buildings.length; i++) {
+
+      if (!(buildingsOverall[buildings[i].name.value]))
+      {
+        console.log("add");
+        buildingsOverall[buildings[i].name.value] = buildings[i];
+        addDelayedProximityMarkers(buildings[i], i * 50)
+      }
+    }
+  }
+
+  function addDelayedProximityMarkers(building, delay) {
+    var string = ''
+    if(building.thumbnail.value != '') string += '<img src=' + building.thumbnail.value + ' style="margin: 15px 5px 0 5px" />'
+    string += '<p>' + building.name.value + '</p>'
+
+    window.setTimeout(function() {
+      var marker = new google.maps.Marker({
+        position: {lat: parseFloat(building.lat.value), lng: parseFloat(building.long.value)},
+        map: map,
+        title: building.name.value,
+        animation: google.maps.Animation.DROP
+      })
+      marker.info = new google.maps.InfoWindow({
+        content: string
+      })
+      infoWindows.push(marker.info)
+      google.maps.event.addListener(marker, 'click', function() {
+        closeInfowindows()
+        marker.info.open(map, marker)
+      })
+      markers.push(marker)
+    }, delay)
+  }
+
+
+
+  function queryInProximity(query) {
+    client.query(query, function (error, results) {
+      if (error) {
+        console.log(error)
+      } else {
+        
+        var buildings = results.results.bindings
+        console.log(buildings)
+        addProximityMarkers(buildings)
+        }
+    })
+  }
+
+
   function getLocationMean() {
     var mean = {
       lat: 0,
@@ -184,11 +252,21 @@ $(document).ready(function(){
   }
 
 
-  function getSightsInProximity() {
-    var query = ""
-
-
-    queryDB(query)
+  function getSightsInProximity(long, lat, radius=0.2) {
+     var query = `PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT * WHERE 
+{
+?s a dbo:ArchitecturalStructure .
+?s rdfs:label ?name .
+FILTER langMatches(lang(?name), 'en').
+?s dbo:thumbnail ?thumbnail .
+?s geo:lat ?lat .
+?s geo:long ?long . FILTER ( ?long > ${long} - ${radius} && ?long < ${long} +  ${radius} && ?lat > ${lat} -  ${radius} && ?lat < ${lat} +  ${radius}) }
+LIMIT 10000`;
+    queryInProximity(query)
+   //   console.log(query)
   }
 
 
@@ -210,4 +288,5 @@ $(document).ready(function(){
                   }\
                   ORDER BY ASC(?Label)"
     queryDB(query)
+
   }
