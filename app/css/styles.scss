@@ -1,10 +1,11 @@
 @import url(https://fonts.googleapis.com/css?family=Lobster);
+@import url(https://fonts.googleapis.com/css?family=Lato:400,300,700,900);
 
 $darkblue: #232c5a;
 $lightgrey: rgba(147, 129, 114, 1);
 
 html, body {
-	font-family: Avenir, Helvetica, Arial, sans-serif;
+	font-family: Avenir, 'Lato', Helvetica, Arial, sans-serif;
 	margin: 0;
 	padding: 0;
 }
@@ -29,7 +30,7 @@ html, body {
 	p {
 		margin-top: -30px;
 		text-transform: uppercase;
-		font-weight: 100;
+		font-weight: 300;
 		letter-spacing: 0.3em;
 		font-size: 12px;
 	}
@@ -46,7 +47,7 @@ h1 {
 }
 
 .form {
-	padding: 100px 0;
+	padding: 100px 0 40px 0;
 
 	#inputfield {
 		padding: 20px 40px;
@@ -59,4 +60,22 @@ h1 {
 .map {
 	height: 100vh;
 	background: $darkblue;
+}
+
+#sightlist {
+	list-style-type: none;
+	padding: 0;
+	margin: 0 auto 80px auto;
+	max-width: 500px;
+}
+
+#sightlist li {
+	font-size: 18px;
+	line-height: 28px;
+	font-weight: 300;
+
+	&:hover {
+		letter-spacing: 0.05em;
+		cursor: pointer;
+	}
 }
