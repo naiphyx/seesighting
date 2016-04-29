@@ -38,11 +38,12 @@ window.map.addListener("idle",function(){
   var right = bounds.j.H
 
 //Get radius from coordinate data of Map Borders 
-  var radius=(Math.max(Math.abs(top-bottom),Math.abs(right-left)))
+  var height = Math.abs(top-bottom)
+  var width = Math.abs(right-left)
 
 // dont make request if zoomfactor is too big
-  if (radius<3)
-  getSightsInProximity(window.map.getCenter().lng(), window.map.getCenter().lat(), radius/2)
+  if (width<3&&height<3)
+  getSightsInProximity(window.map.getCenter().lng(), window.map.getCenter().lat(), height/2, width/2)
 })
 
 
@@ -269,7 +270,7 @@ window.map.addListener("idle",function(){
   }
 
 
-  function getSightsInProximity(long, lat, radius=0.2) {
+  function getSightsInProximity(long, lat, height, width) {
      var query = `PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX dbo: <http://dbpedia.org/ontology/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -282,7 +283,7 @@ FILTER NOT EXISTS { ?s a dbo:RailwayLine } .
 FILTER langMatches(lang(?name), 'en').
 ?s dbo:thumbnail ?thumbnail .
 ?s geo:lat ?lat .
-?s geo:long ?long . FILTER ( ?long > ${long} - ${radius} && ?long < ${long} +  ${radius} && ?lat > ${lat} -  ${radius} && ?lat < ${lat} +  ${radius}) }
+?s geo:long ?long . FILTER ( ?long > ${long} - ${width} && ?long < ${long} +  ${width} && ?lat > ${lat} -  ${height} && ?lat < ${lat} +  ${height}) }
 LIMIT 10000`;
     queryInProximity(query)
    //   console.log(query)
