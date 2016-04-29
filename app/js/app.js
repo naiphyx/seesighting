@@ -185,7 +185,6 @@ window.map.addListener("idle",function(){
 
       if (!(buildingsOverall[buildings[i].name.value]))
       {
-        console.log("add");
         buildingsOverall[buildings[i].name.value] = buildings[i];
         addDelayedProximityMarkers(buildings[i], i * 50)
       }
