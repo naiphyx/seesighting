@@ -74,6 +74,11 @@ h1 {
 	line-height: 28px;
 	font-weight: 300;
 
+	a:link, :visited {
+		text-decoration: none;
+		color: #000;
+	}
+
 	&:hover {
 		letter-spacing: 0.05em;
 		cursor: pointer;
