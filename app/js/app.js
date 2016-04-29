@@ -27,6 +27,8 @@ $(document).ready(function(){
     $('#cityname').html(city)
     $('#inputfield').val('')
     $('#cityerror').html('')
+    $('#sightlabel').html('')
+    $('#sightabstract').html('')
     getSightsByCity(city)
     event.preventDefault()
   })
