@@ -29,6 +29,7 @@ $(document).ready(function(){
     $('#cityerror').html('')
     $('#sightlabel').html('')
     $('#sightabstract').html('')
+    $('#sightthumb').attr("src", '')
     getSightsByCity(city)
     event.preventDefault()
   })
@@ -54,6 +55,7 @@ $(document).ready(function(){
   function showDetails(id) {
     $('#sightlabel').html(sights[id].Label.value)
     $('#sightabstract').html(sights[id].Abstract.value)
+    $('#sightthumb').attr("src", sights[id].Thumbnail.value)
   }
 
 
