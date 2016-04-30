@@ -66,10 +66,11 @@ window.map.addListener("idle",function(){
   function showResults(object) {
     $('#sightlist').html("")
 
-     $("#showhidelist").show()
+     $('#showhidelist').attr("style", "visibility:visible")
 
     if(sights.length == 0) {
       $('#cityerror').html("We are terribly sorry, we were not able to find any sights matching your city. ")
+      $('#showhidelist').attr("style", "visibility:hidden")
     }
     else {
       for (var i = 0; i < sights.length; i++) {
@@ -284,7 +285,7 @@ window.map.addListener("idle",function(){
 					?s dbo:thumbnail ?thumbnail .
 					?s geo:lat ?lat .
 					?s geo:long ?long . FILTER ( ?long > ${long} - ${width} && ?long < ${long} +  ${width} && ?lat > ${lat} -  ${height} && ?lat < ${lat} +  ${height}) }
-					LIMIT 10000`;
+					LIMIT 25`;
     queryInProximity(query)
    //   console.log(query)
   }
