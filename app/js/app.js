@@ -70,10 +70,11 @@ window.map.addListener("idle",function(){
   function showResults(object) {
     $('#sightlist').html("")
 
-     $("#showhidelist").show()
+     $('#showhidelist').attr("style", "visibility:visible")
 
     if(sights.length == 0) {
       $('#cityerror').html("We are terribly sorry, we were not able to find any sights matching your city. ")
+      $('#showhidelist').attr("style", "visibility:hidden")
     }
     else {
       for (var i = 0; i < sights.length; i++) {
@@ -277,19 +278,19 @@ window.map.addListener("idle",function(){
 
   function getSightsInProximity(long, lat, height, width) {
      var query = `PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX dbo: <http://dbpedia.org/ontology/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT * WHERE
-{
-?s a dbo:ArchitecturalStructure .
-FILTER NOT EXISTS { ?s a dbo:Station } .
-FILTER NOT EXISTS { ?s a dbo:RailwayLine } .
-?s rdfs:label ?name .
-FILTER langMatches(lang(?name), 'en').
-?s dbo:thumbnail ?thumbnail .
-?s geo:lat ?lat .
-?s geo:long ?long . FILTER ( ?long > ${long} - ${width} && ?long < ${long} +  ${width} && ?lat > ${lat} -  ${height} && ?lat < ${lat} +  ${height}) }
-LIMIT 10000`;
+                  PREFIX dbo: <http://dbpedia.org/ontology/>
+                  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                  SELECT * WHERE
+                  {
+                  ?s a dbo:ArchitecturalStructure .
+                  FILTER NOT EXISTS { ?s a dbo:Station } .
+                  FILTER NOT EXISTS { ?s a dbo:RailwayLine } .
+                  ?s rdfs:label ?name .
+                  FILTER langMatches(lang(?name), 'en').
+                  ?s dbo:thumbnail ?thumbnail .
+                  ?s geo:lat ?lat .
+                  ?s geo:long ?long . FILTER ( ?long > ${long} - ${width} && ?long < ${long} +  ${width} && ?lat > ${lat} -  ${height} && ?lat < ${lat} +  ${height}) }
+                  LIMIT 25`;
     queryInProximity(query)
    //   console.log(query)
   }
@@ -298,20 +299,20 @@ LIMIT 10000`;
   function getSightsByCity(city) {
     city = stringify(city)
 
-    var query = "PREFIX dcterms:  <http://purl.org/dc/terms/>\
-                  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\
-                  SELECT DISTINCT (str(?label) as ?Label) (str(?lat) as ?Lat) (str(?long) as ?Long) (str(?thumbnail) as ?Thumbnail) (?abstract as ?Abstract)\
-                  WHERE { \
-                    ?sight dct:subject <http://dbpedia.org/resource/Category:Visitor_attractions_in_" + city + "> .\
-                  FILTER langMatches(lang(?label), 'en').\
-                  FILTER langMatches(lang(?abstract), 'en').\
-                    ?sight rdfs:label ?label .\
-                    ?sight geo:lat ?lat .\
-                    ?sight geo:long ?long .\
-                    ?sight dbo:thumbnail ?thumbnail .\
-                    ?sight dbo:abstract ?abstract \
-                  }\
-                  ORDER BY ASC(?Label)"
+    var query = `PREFIX dcterms:  <http://purl.org/dc/terms/>
+                  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                  SELECT DISTINCT (str(?label) as ?Label) (str(SAMPLE(?lat)) as ?Lat) (str(SAMPLE(?long)) as ?Long) (str(SAMPLE(?thumbnail)) as ?Thumbnail) (?abstract as ?Abstract)
+                  WHERE {
+                    ?sight dct:subject <http://dbpedia.org/resource/Category:Visitor_attractions_in_${city}> .
+                  FILTER langMatches(lang(?label), 'en').
+                    ?sight rdfs:label ?label .
+                    ?sight geo:lat ?lat .
+                    ?sight geo:long ?long .
+                    ?sight dbo:thumbnail ?thumbnail .
+                  FILTER langMatches(lang(?abstract), 'en').
+                    ?sight dbo:abstract ?abstract
+                  }
+                  ORDER BY ASC(?Label)`
     queryDB(query)
 
   }
