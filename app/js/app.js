@@ -22,6 +22,10 @@ $(document).ready(function(){
     showDetails(this.dataset.id)
   })
 
+  $('#map').on('click', '.ifwo', function() {
+    showDetails(this.dataset.id)
+  })
+
   $("#sightlist, #showhidelist").hide()
 
   $("#showhidelist").click(function() {
@@ -37,7 +41,7 @@ window.map.addListener("idle",function(){
   var bottom = bounds.H.H
   var right = bounds.j.H
 
-//Get radius from coordinate data of Map Borders 
+//Get radius from coordinate data of Map Borders
   var height = Math.abs(top-bottom)
   var width = Math.abs(right-left)
 
@@ -117,7 +121,7 @@ window.map.addListener("idle",function(){
   function addMarkers() {
     clearMarkers()
     for (var i = 0; i < sights.length; i++) {
-      addDelayedMarkers(sights[i], i * 50)
+      addDelayedMarkers(sights[i], i, i * 50)
     }
   }
 
@@ -136,10 +140,11 @@ window.map.addListener("idle",function(){
   }
 
 
-  function addDelayedMarkers(sight, delay) {
+  function addDelayedMarkers(sight, id, delay) {
     var string = ''
     if(sight.Thumbnail.value != '') string += '<img src=' + sight.Thumbnail.value + ' style="margin: 15px 5px 0 5px" />'
     string += '<p>' + sight.Label.value + '</p>'
+    string += '<a href="#current-details" data-id=' + id + ' class="detail-popup ifwo">read more</a>'
 
     window.setTimeout(function() {
       var marker = new google.maps.Marker({
@@ -233,7 +238,7 @@ window.map.addListener("idle",function(){
       if (error) {
         console.log(error)
       } else {
-        
+
         var buildings = results.results.bindings
         console.log(buildings)
         addProximityMarkers(buildings)
@@ -274,7 +279,7 @@ window.map.addListener("idle",function(){
      var query = `PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX dbo: <http://dbpedia.org/ontology/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT * WHERE 
+SELECT * WHERE
 {
 ?s a dbo:ArchitecturalStructure .
 FILTER NOT EXISTS { ?s a dbo:Station } .
