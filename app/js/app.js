@@ -33,6 +33,13 @@ $(document).ready(function(){
   })
 })
 
+window.map.addListener('click', function() {
+      closeInfowindows()
+    })
+
+window.map.addListener('dragstart', function() {
+      closeInfowindows()
+    })
 
 window.map.addListener("idle",function(){
   var bounds = window.map.getBounds();
@@ -114,9 +121,6 @@ window.map.addListener("idle",function(){
 
     // centers the map at the current position of the user
     map.setCenter({lat: centerLat, lng: centerLng})
-    map.addListener('click', function() {
-      closeInfowindows()
-    })
   }
 
   function addMarkers() {
@@ -212,6 +216,7 @@ window.map.addListener("idle",function(){
     var string = ''
     if(building.thumbnail.value != '') string += '<img src=' + building.thumbnail.value + ' style="margin: 15px 5px 0 5px" />'
     string += '<p>' + building.name.value + '</p>'
+    string += `<a href="${building.link.value}" target="_blank">Open in wikipedia</a>`
 
     window.setTimeout(function() {
       var marker = new google.maps.Marker({
@@ -280,6 +285,7 @@ window.map.addListener("idle",function(){
      var query = `PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
                   PREFIX dbo: <http://dbpedia.org/ontology/>
                   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                  PREFIX foaf: <http://xmlns.com/foaf/0.1/>
                   SELECT * WHERE
                   {
                   ?s a dbo:ArchitecturalStructure .
@@ -288,6 +294,7 @@ window.map.addListener("idle",function(){
                   ?s rdfs:label ?name .
                   FILTER langMatches(lang(?name), 'en').
                   ?s dbo:thumbnail ?thumbnail .
+                  ?s foaf:isPrimaryTopicOf ?link .
                   ?s geo:lat ?lat .
                   ?s geo:long ?long . FILTER ( ?long > ${long} - ${width} && ?long < ${long} +  ${width} && ?lat > ${lat} -  ${height} && ?lat < ${lat} +  ${height}) }
                   LIMIT 25`;
