@@ -26,6 +26,11 @@ $(document).ready(function(){
     showDetails(this.dataset.id)
   })
 
+    $('#map').on('click', '.ifowbuilding', function() {
+      console.log("blaah")
+    showDetailsPerBuilding(this.dataset.id)
+  })
+
   $("#sightlist, #showhidelist").hide()
 
   $("#showhidelist").click(function() {
@@ -90,10 +95,7 @@ window.map.addListener("idle",function(){
       }
     }
     // add popup functionality after li are appended
-    $('.detail-popup').magnificPopup({
-      type:'inline',
-      midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
-    })
+
   }
 
 
@@ -102,6 +104,12 @@ window.map.addListener("idle",function(){
     $('#sightlabel').html(sights[id].Label.value)
     $('#sightabstract').html(sights[id].Abstract.value)
     $('#sightthumb').attr("src", sights[id].Thumbnail.value)
+  }
+  function showDetailsPerBuilding(buildingName){
+    console.log(buildingName)
+    $('#sightlabel').html(buildingsOverall[buildingName].name.value)
+    $('#sightabstract').html(buildingsOverall[buildingName].abstract.value)
+    $('#sightthumb').attr("src", buildingsOverall[buildingName].thumbnail.value)
   }
 
 
@@ -161,11 +169,22 @@ window.map.addListener("idle",function(){
       marker.info = new google.maps.InfoWindow({
         content: string
       })
+
+      google.maps.event.addListener(marker.info, 'domready', function() {
+        //Eventlisteners of Popup have to be in this scope!
+          $('.detail-popup').magnificPopup({
+          type:'inline',
+          midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
+          })
+        });
+
+
       infoWindows.push(marker.info)
       google.maps.event.addListener(marker, 'click', function() {
         closeInfowindows()
         marker.info.open(map, marker)
       })
+
       markers.push(marker)
     }, delay)
   }
@@ -203,9 +222,9 @@ window.map.addListener("idle",function(){
 
     for (var i = 0; i < buildings.length; i++) {
 
-      if (!(buildingsOverall[buildings[i].name.value]))
+      if (!(buildingsOverall[stringify(buildings[i].name.value)]))
       {
-        buildingsOverall[buildings[i].name.value] = buildings[i];
+        buildingsOverall[stringify(buildings[i].name.value)] = buildings[i];
         addDelayedProximityMarkers(buildings[i], i * 50)
       }
     }
@@ -216,7 +235,8 @@ window.map.addListener("idle",function(){
     var string = ''
     if(building.thumbnail.value != '') string += '<img src=' + building.thumbnail.value + ' style="margin: 15px 5px 0 5px" />'
     string += '<p>' + building.name.value + '</p>'
-    string += `<a href="${building.link.value}" target="_blank">Open in wikipedia</a>`
+   // string += `<a href="${building.link.value}" target="_blank">Open in wikipedia</a>`
+    string += '<a href="#current-details" data-id=' + stringify(building.name.value) + ' class="detail-popup ifowbuilding">read more</a>'
 
     window.setTimeout(function() {
       var marker = new google.maps.Marker({
@@ -228,6 +248,14 @@ window.map.addListener("idle",function(){
       marker.info = new google.maps.InfoWindow({
         content: string
       })
+      google.maps.event.addListener(marker.info, 'domready', function() {
+        //Eventlisteners of Popup have to be in this scope!
+          $('.detail-popup').magnificPopup({
+          type:'inline',
+          midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
+          })
+        });
+
       infoWindows.push(marker.info)
       google.maps.event.addListener(marker, 'click', function() {
         closeInfowindows()
@@ -294,6 +322,8 @@ window.map.addListener("idle",function(){
                   ?s rdfs:label ?name .
                   FILTER langMatches(lang(?name), 'en').
                   ?s dbo:thumbnail ?thumbnail .
+                  FILTER langMatches(lang(?abstract), 'en') .
+                    ?s dbo:abstract ?abstract .
                   ?s foaf:isPrimaryTopicOf ?link .
                   ?s geo:lat ?lat .
                   ?s geo:long ?long . FILTER ( ?long > ${long} - ${width} && ?long < ${long} +  ${width} && ?lat > ${lat} -  ${height} && ?lat < ${lat} +  ${height}) }
