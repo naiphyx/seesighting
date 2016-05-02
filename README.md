@@ -1,6 +1,6 @@
 ## SeeSighting
 
-
+This app shows marvellous sights in your vicinity. Also you can search for sights in particular city to plan your stay abroad.
 
 
 ### Project Members (sstw)
@@ -13,5 +13,4 @@
 ### For Dev
 * install gulp-cli globally via npm
 * use npm install
-* run gulp 
-
+* run gulp
